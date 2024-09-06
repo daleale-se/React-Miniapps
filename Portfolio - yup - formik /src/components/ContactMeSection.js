@@ -25,13 +25,17 @@ const LandingSection = () => {
     initialValues: {
       firstName: "",
       email: "",
+      type: "",
       comment: ""
     },
-    onSubmit: (values, {resetForm}) => {
-      const {type, message} = response
-      submit("", values)
-      onOpen(type, message)
-      resetForm()
+    // here i have a error, each first time that i click to submit dont do anything
+    onSubmit: async (values, {resetForm}) => {
+      await submit("", values)
+      if (response) {
+        const {type, message} = response
+        onOpen(type, message)
+        resetForm()
+      }
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Required"),
