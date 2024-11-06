@@ -48,7 +48,7 @@ const Header = () => {
   }, [])
 
   const handleClick = (anchor) => () => {
-    const id = `${anchor}-section`;
+    const id = `${anchor}-section`;    
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({
@@ -84,8 +84,8 @@ const Header = () => {
           </nav>
           <nav>
             <HStack spacing={8}>
-              <a href="/#contactme-section" onClick={handleClick}>Contact Me</a>
-              <a href="/#projects-section" onClick={handleClick}>Projects</a>
+              <a href="/#project" onClick={handleClick("projects")}>Projects</a>
+              <a href="/#contactme" onClick={handleClick("contactme")}>Contact Me</a>
             </HStack>
           </nav>
         </HStack>

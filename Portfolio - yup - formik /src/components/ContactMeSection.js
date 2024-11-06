@@ -21,26 +21,29 @@ const LandingSection = () => {
   const {isLoading, response, submit} = useSubmit();
   const { onOpen } = useAlertContext();
 
+  useEffect(() => {
+    if (response) {
+      const {type, message} = response
+      onOpen(type, message);
+      if (type === "success") formik.resetForm();
+    }
+  }, [response])
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
       email: "",
-      type: "",
+      type: "hireMe",
       comment: ""
     },
-    // here i have a error, each first time that i click to submit dont do anything
-    onSubmit: async (values, {resetForm}) => {
+    // here i had a error, each first time that i click to submit dont do anything
+    onSubmit: async (values) => {
       await submit("", values)
-      if (response) {
-        const {type, message} = response
-        onOpen(type, message)
-        resetForm()
-      }
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Required"),
       email: Yup.string().required("Required").email("Invalid email address"),
-      type: Yup.string(),
+      // type: Yup.string(),
       comment: Yup.string().min(25, "Must be at least 25 characters").required("Required")
     }),
   });
@@ -59,7 +62,7 @@ const LandingSection = () => {
         <Box p={6} rounded="md" w="100%">
           <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
-              <FormControl isInvalid={formik.touched.firstName && formik.errors.firstName}>
+              <FormControl isInvalid={!!formik.touched.firstName && formik.errors.firstName}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
                   id="firstName"
@@ -68,7 +71,7 @@ const LandingSection = () => {
                 />
                 <FormErrorMessage>{formik.errors.firstName}</FormErrorMessage>
               </FormControl>
-              <FormControl isInvalid={formik.touched.email && formik.errors.email}>
+              <FormControl isInvalid={!!formik.touched.email && formik.errors.email}>
                 <FormLabel htmlFor="email">Email Address</FormLabel>
                 <Input
                   id="email"
@@ -88,7 +91,7 @@ const LandingSection = () => {
                   <option value="other">Other</option>
                 </Select>
               </FormControl>
-              <FormControl isInvalid={formik.touched.comment && formik.errors.comment}>
+              <FormControl isInvalid={!!formik.touched.comment && formik.errors.comment}>
                 <FormLabel htmlFor="comment">Your message</FormLabel>
                 <Textarea
                   id="comment"
@@ -98,8 +101,12 @@ const LandingSection = () => {
                 />
                 <FormErrorMessage>{formik.errors.comment}</FormErrorMessage>
               </FormControl>
-              <Button type="submit" colorScheme="purple" width="full">
-                {isLoading?"Loading...":"Submit"}
+              <Button 
+              type="submit"
+              colorScheme="purple" 
+              width="full" 
+              isLoading={isLoading}>
+                Submit
               </Button>
             </VStack>
           </form>
